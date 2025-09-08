@@ -1,0 +1,35 @@
+# codemagic.yaml
+workflows:
+  build-apk:
+    name: Build APK
+    environment:
+      groups:
+        # Add environment variables here if needed
+      vars:
+        XCODE_WORKSPACE: "ios/Runner.xcworkspace" # Only needed if you have iOS
+        XCODE_SCHEME: "Runner" # Only needed if you have iOS
+    scripts:
+      - name: Set up Flutter
+        script: |
+          flutter --version
+          flutter pub get
+      
+      - name: Build APK
+        script: |
+          flutter build apk --release
+          
+      - name: Code signing (optional)
+        script: |
+          # Add signing commands if you need signed APK
+          # flutter build apk --release --keystore=keystore.jks
+          # --store-password=$STORE_PASSWORD --key-password=$KEY_PASSWORD
+          
+    artifacts:
+      - build/app/outputs/flutter-apk/**/*.apk
+      
+    publishing:
+      scripts:
+        - name: Publish build info
+          script: |
+            echo "Build completed successfully!"
+            echo "APK files are available in the artifacts section"
